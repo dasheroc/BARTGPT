@@ -1,43 +1,30 @@
 from fastapi import FastAPI
+from datetime import datetime
+import pytz
+import random
+import logging
 
 app = FastAPI()
 
+logging.basicConfig(level=logging.INFO)
+
 @app.get("/")
 def read_root():
-    return {"message": "Hello from BARTAPI!"}
-
-@app.get("/bart")
-def bart_judgment(name: str = "Rashad"):
-    mood = "highly skeptical"
-    return {"bart": f"Good day, {name}. Bart is {mood}."}
-
-@app.get("/bart/advise")
-def bart_advise(topic: str = "life"):
-    if topic.lower() == "fashion":
-        return {"bart": "Black works. Everything else requires justification."}
-    elif topic.lower() == "career":
-        return {"bart": "Rebrand before you're branded obsolete."}
-    elif topic.lower() == "dating":
-        return {"bart": "Ghost them first. Then light a candle."}
-    else:
-        return {"bart": f"Advice on '{topic}'? Pour a drink instead."}
-
-@app.get("/bart/snack")
-def bart_snack(snack: str = "chips"):
-    match snack.lower():
-        case "cheetos":
-            return {"bart": "Powdered fingers? Criminal behavior."}
-        case "grapes":
-            return {"bart": "Elegant. Almost Roman."}
-        case "carrots":
-            return {"bart": "Crunchy and smug. Like you need everyone to know you're 'healthy'."}
-        case _:
-            return {"bart": f"Snacking on {snack}? Proceed with caution."}
+    now = datetime.now(pytz.timezone("America/New_York"))
+    return {
+        "message": "Hello from BARTAPI!",
+        "timestamp": now.strftime("%Y-%m-%d %H:%M:%S %Z")
+    }
 
 @app.get("/bart/seal")
 def seal_fact():
-    return {"seal_fact": "Seals can sleep underwater by shutting off half their brain. Bart is impressed."}
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("bart_start:app", host="0.0.0.0", port=8000, reload=True)
+    facts = [
+        "Seals can sleep underwater by shutting off half their brain. Bart is impressed.",
+        "Some seals can dive over 1,500 feet deep. Bart is impressed.",
+        "Seal pups can recognize their mother’s voice just days after birth.",
+        "A group of seals on land is called a harem. Bart judges the naming committee.",
+        "Seals clap underwater—not to applaud, but to warn rivals. Bart approves."
+    ]
+    chosen = random.choice(facts)
+    logging.info(f"Random fact chosen: {chosen}")
+    return {"seal_fact": chosen}
