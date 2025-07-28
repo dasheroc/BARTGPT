@@ -28,3 +28,6 @@ def seal_fact():
     chosen = random.choice(facts)
     logging.info(f"Random fact chosen: {chosen}")
     return {"seal_fact": chosen}
+@app.get("/")
+def root():
+    return {"message": "BartGPT API is alive. Try /docs for the interface."}
