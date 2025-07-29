@@ -1,20 +1,10 @@
 from fastapi import FastAPI
-from datetime import datetime
-import pytz
+from datetime import datetime as now
 import random
 import logging
 
 app = FastAPI()
 
-logging.basicConfig(level=logging.INFO)
-
-@app.get("/")
-def read_root():
-    now = datetime.now(pytz.timezone("America/New_York"))
-    return {
-        "message": "Hello from BARTAPI!",
-        "timestamp": now.strftime("%Y-%m-%d %H:%M:%S %Z")
-    }
 
 @app.get("/bart/seal")
 def seal_fact():
@@ -28,6 +18,3 @@ def seal_fact():
     chosen = random.choice(facts)
     logging.info(f"Random fact chosen: {chosen}")
     return {"seal_fact": chosen}
-@app.get("/")
-def root():
-    return {"message": "BartGPT API is alive. Try /docs for the interface."}
