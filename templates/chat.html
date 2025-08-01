@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bart's Judgment</title>
+    <style>
+        body {
+            background-color: #111;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
+            padding: 2rem;
+        }
+        h1 {
+            color: #ffcc33;
+        }
+        form {
+            margin-top: 1.5rem;
+        }
+        textarea {
+            width: 80%;
+            height: 100px;
+            background-color: #1a1a1a;
+            color: #fff;
+            border: 1px solid #666;
+            padding: 10px;
+            font-size: 1rem;
+            resize: none;
+        }
+        input[type="submit"] {
+            margin-top: 1rem;
+            background-color: #ffcc33;
+            color: #111;
+            padding: 10px 20px;
+            border: none;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .judgment-block {
+            margin-top: 2rem;
+        }
+        .verdict {
+            font-size: 1.8rem;
+            color: #ffcc33;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bart is listening...</h1>
+    
+    <form method="POST">
+        <textarea name="title" placeholder="Unburden your soul here..."></textarea><br>
+        <input type="submit" value="Submit to Bart">
+    </form>
+
+    {% if judgment %}
+    <div class="judgment-block">
+        <h2>Judgment Returned:</h2>
+        <p>{{ judgment }}</p>
+        <p class="verdict">{{ judgment }}</p>
+    </div>
+    {% endif %}
+</body>
+</html>
