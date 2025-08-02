@@ -3,6 +3,7 @@ uvicorn
 openai
 pytz
 Flask
+python-multipart
 
 
 
