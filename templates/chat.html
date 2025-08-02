@@ -26,39 +26,32 @@
             height: 100px;
             background-color: #1a1a1a;
             color: #fff;
-            border: none;
+            border: 1px solid #333;
             padding: 1rem;
-            font-size: 1rem;
-            resize: vertical;
+            resize: none;
         }
 
         button {
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
             background-color: #ffcc33;
             color: #111;
             border: none;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
+            font-weight: bold;
             cursor: pointer;
-            margin-top: 1rem;
-            transition: background-color 0.2s ease-in-out;
-        }
-
-        button:hover {
-            background-color: #e6b800;
         }
 
         .judgment {
-            margin-top: 2rem;
-            font-weight: bold;
-            font-size: 1.2rem;
             color: #ffcc33;
+            margin-top: 2rem;
+            font-size: 1.25rem;
         }
     </style>
 </head>
 
 <body>
     <h1>Bart is listening...</h1>
-    <form method="post" action="/">
+    <form method="post" action="/" enctype="application/x-www-form-urlencoded">
         <textarea name="soul" placeholder="Unburden your soul here..." required></textarea><br>
         <button type="submit">Submit to Bart</button>
     </form>
