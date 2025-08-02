@@ -1,19 +1,18 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
+templates = Jinja2Templates(directory="templates")
 
 
-@app.get("/bart/film")
-def film_opinion(title: str = "Suspiria"):
-    match title.lower():
-        case "suspiria" | "fargo":
-            return {"judgment": "Acceptable. Bart squints."}
-        case _:
-            return {"judgment": "Wrong. Bart sighs."}
+@app.get("/", response_class=HTMLResponse)
+async def get_chat(request: Request):
+    return templates.TemplateResponse("chat.html", {"request": request})
 
 
 @app.get("/bart/feelings")
-def bart_feelings(mood: str):
+async def bart_feelings(mood: str):
     match mood.lower():
         case "elated":
             return {"response": "Bart pirouettes silently. Joy is a silent scream."}
