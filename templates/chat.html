@@ -1,68 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Bart is listening...</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <style>
-        body {
-            background-color: #111;
-            color: #fff;
-            font-family: 'Segoe UI', sans-serif;
-            text-align: center;
-            padding: 2rem;
-        }
-
-        h1 {
-            color: #ffcc33;
-        }
-
-        form {
-            margin-top: 1.5rem;
-        }
-
-        textarea {
-            width: 80%;
-            height: 100px;
-            background-color: #1a1a1a;
-            color: #fff;
-            border: 1px solid #333;
-            padding: 1rem;
-            resize: none;
-        }
-
-        button {
-            margin-top: 1rem;
-            padding: 0.75rem 1.5rem;
-            background-color: #ffcc33;
-            color: #111;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .judgment {
-            color: #ffcc33;
-            margin-top: 2rem;
-            font-size: 1.25rem;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Bart is listening...</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #fdd835;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    form {
+      width: 60%;
+      max-width: 800px;
+      min-width: 300px;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      background-color: #1c1c1c;
+      color: #fff;
+      border: 1px solid #555;
+      padding: 10px;
+      font-size: 16px;
+      resize: none;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #fdd835;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ffeb3b;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
-
 <body>
-    <h1>Bart is listening...</h1>
-    <form method="post" action="/" enctype="application/x-www-form-urlencoded">
-        <textarea name="soul" placeholder="Unburden your soul here..." required></textarea><br>
-        <button type="submit">Submit to Bart</button>
-    </form>
-
-    {% if judgment %}
-    <div class="judgment">
-        Judgment Returned:<br>
-        {{ judgment }}
-    </div>
-    {% endif %}
+  <h1>Bart is listening...</h1>
+  <form method="post" action="/">
+    <textarea name="soul" placeholder="Unburden your soul here..." required></textarea>
+    <button type="submit">Submit to Bart</button>
+  </form>
+  <script>
+    const textarea = document.querySelector("textarea");
+    textarea.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        this.form.submit();
+      }
+    });
+  </script>
 </body>
-
 </html>
