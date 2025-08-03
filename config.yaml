@@ -1,0 +1,4 @@
+continue:
+  provider: openai
+  model: gpt-4o
+  api_key: sk-...your-real-key-here...
