@@ -2,75 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>BartAPI Chat</title>
+    <title>Bart is listening</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='favicon.ico') }}">
     <style>
-        * {
-            box-sizing: border-box;
-        }
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #0e0e0e;
-            color: #f5f5f5;
-            font-family: 'Courier New', monospace;
+            background-color: #0D1B2A; /* Pretentious dark blue */
+            color: #C0C0C0; /* Chrome silver */
+            font-family: 'Orbitron', sans-serif; /* Or swap later */
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
+            margin: 0;
         }
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 80%;
-            max-width: 900px;
+        h1 {
+            font-size: 2.5em;
+            color: #C0C0C0;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 30px;
         }
         textarea {
-            width: 100%;
-            height: 200px;
-            background-color: #1e1e1e;
-            color: #f5f5f5;
-            border: 1px solid #777;
-            padding: 12px;
-            font-size: 16px;
+            width: 60vw;
+            height: 180px;
+            background-color: #121212;
+            color: #C0C0C0;
+            font-size: 1em;
+            padding: 15px;
+            border: none;
+            border-radius: 4px;
             resize: none;
-            margin-bottom: 20px;
+            box-shadow: 0 0 10px #000;
         }
         button {
-            background-color: #222;
-            color: #f5f5f5;
-            font-size: 18px;
-            padding: 12px 36px;
-            border: 1px solid #666;
+            margin-top: 25px;
+            padding: 12px 28px;
+            background-color: #FFD700;
+            color: black;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            font-weight: bold;
+            text-transform: uppercase;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: background-color 0.3s ease;
         }
         button:hover {
-            background-color: #333;
+            background-color: #e6c200;
         }
         .response {
             margin-top: 40px;
-            background-color: #1a1a1a;
-            border: 1px solid #444;
-            padding: 20px;
-            width: 80%;
-            max-width: 900px;
-            font-size: 16px;
+            color: #A9A9A9;
+            font-style: italic;
         }
     </style>
+    <!-- Optional: Orbitron from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <h1>BART IS LISTENING</h1>
     <form method="post">
-        <textarea name="user_input" placeholder="Speak, friend…"></textarea>
+        <textarea name="soul" placeholder="Unburden your soul here..." required></textarea>
+        <br>
         <button type="submit">PROCEED</button>
     </form>
-
-    {% if user_input %}
-    <div class="response">
-        <strong>You said:</strong> {{ user_input }}
-    </div>
+    {% if response %}
+        <div class="response">{{ response }}</div>
     {% endif %}
 </body>
 </html>
