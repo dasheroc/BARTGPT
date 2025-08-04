@@ -71,11 +71,9 @@
         <textarea name="soul" placeholder="Unburden your soul here..." required></textarea>
         <button type="submit">PROCEED</button>
     </form>
-
     <script>
         const textarea = document.querySelector("textarea");
         const form = document.querySelector("form");
-
         textarea.addEventListener("keydown", function (event) {
             if (event.key === "Enter" && !event.shiftKey) {
                 event.preventDefault();
