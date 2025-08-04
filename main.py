@@ -1,11 +1,11 @@
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
 
-# Mount the static directory to serve things like favicon.ico
+# Mount static directory (e.g., for favicon)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Set up the templates directory
