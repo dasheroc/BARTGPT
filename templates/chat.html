@@ -2,46 +2,70 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Bart is listening...</title>
+    <title>Bart is listening</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='favicon.ico') }}">
     <style>
         body {
-            background-color: #111;
-            color: #ffd700;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
-            padding-top: 10%;
+            background-color: #0D1B2A; /* Pretentious dark blue */
+            color: #C0C0C0; /* Chrome silver */
+            font-family: 'Orbitron', sans-serif; /* Or swap later */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            font-size: 2.5em;
+            color: #C0C0C0;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 30px;
         }
         textarea {
-            background-color: #1c1c1c;
-            color: #ccc;
-            border: 1px solid #444;
-            width: 50%;
-            height: 120px;
-            font-size: 16px;
-            padding: 10px;
+            width: 60vw;
+            height: 180px;
+            background-color: #121212;
+            color: #C0C0C0;
+            font-size: 1em;
+            padding: 15px;
+            border: none;
+            border-radius: 4px;
             resize: none;
+            box-shadow: 0 0 10px #000;
         }
         button {
-            background-color: #ffd700;
-            color: #000;
+            margin-top: 25px;
+            padding: 12px 28px;
+            background-color: #FFD700;
+            color: black;
             border: none;
-            padding: 10px 20px;
-            margin-top: 20px;
-            font-size: 16px;
+            border-radius: 4px;
+            font-size: 1em;
+            font-weight: bold;
+            text-transform: uppercase;
             cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #e6c200;
         }
         .response {
             margin-top: 40px;
-            color: #fff;
+            color: #A9A9A9;
+            font-style: italic;
         }
     </style>
+    <!-- Optional: Orbitron from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Bart is listening...</h1>
+    <h1>BART IS LISTENING</h1>
     <form method="post">
-        <textarea name="soul" placeholder="Unburden your soul here..." required></textarea><br>
-        <button type="submit">Submit to Bart</button>
+        <textarea name="soul" placeholder="Unburden your soul here..." required></textarea>
+        <br>
+        <button type="submit">PROCEED</button>
     </form>
     {% if response %}
         <div class="response">{{ response }}</div>
