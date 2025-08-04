@@ -1,69 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bart is listening…</title>
-
-  <!-- Favicon with cache-busting -->
-  <link rel="icon" type="image/x-icon" href="/static/favicon.ico?v=4" />
-  <link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico?v=4" />
-
-  <style>
-    body {
-      background-color: #111;
-      color: #ffd700;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      text-align: center;
-      padding-top: 100px;
-    }
-
-    textarea {
-      width: 60%;
-      height: 150px;
-      background-color: #1c1c1c;
-      color: #ccc;
-      border: 1px solid #555;
-      padding: 10px;
-      font-size: 16px;
-      resize: none;
-      border-radius: 5px;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #ffd700;
-      border: none;
-      color: #000;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-
-    button:hover {
-      background-color: #ffcc00;
-    }
-
-    form {
-      display: inline-block;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bart is listening...</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+        body {
+            background-color: #0f0f0f;
+            color: #f4c430;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        textarea {
+            width: 600px;
+            height: 180px;
+            max-width: 90%;
+            background-color: #1c1c1c;
+            color: #ccc;
+            border: 1px solid #555;
+            padding: 10px;
+            font-size: 16px;
+            resize: vertical;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: #f4c430;
+            color: #0f0f0f;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #d4a000;
+        }
+    </style>
 </head>
 <body>
-  <h1>Bart is listening...</h1>
-  <form method="POST">
-    <textarea name="soul" placeholder="Unburden your soul here..." required></textarea><br>
-    <button type="submit">Submit to Bart</button>
-  </form>
+    <h1>Bart is listening...</h1>
+    <form method="post" action="/" id="soulForm">
+        <textarea name="soul" placeholder="Unburden your soul here..." required></textarea>
+        <button type="submit">Submit to Bart</button>
+    </form>
 
-  <script>
-    document.querySelector("textarea").addEventListener("keydown", function (e) {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        this.form.submit();
-      }
-    });
-  </script>
+    <script>
+        const textarea = document.querySelector('textarea');
+        textarea.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                this.form.submit();
+            }
+        });
+    </script>
 </body>
 </html>
