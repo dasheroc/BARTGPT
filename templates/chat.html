@@ -68,8 +68,15 @@
 <body>
     <h1>BART IS LISTENING</h1>
     <form method="post">
-        <textarea name="soul" placeholder="Unburden your soul here..." required></textarea>
+        <textarea name="user_input" placeholder="Unburden your soul here..." required></textarea>
         <button type="submit">PROCEED</button>
     </form>
+
+    {% if user_input %}
+        <div style="margin-top: 30px; text-align: center;">
+            <p>You said:</p>
+            <blockquote style="color: #aaa; font-style: italic;">{{ user_input }}</blockquote>
+        </div>
+    {% endif %}
 </body>
 </html>
