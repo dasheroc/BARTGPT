@@ -2,75 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bart is listening...</title>
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='favicon.ico') }}">
     <style>
         body {
-            background-color: #0f0f0f;
-            color: #f4c430;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
-        }
-        h1 {
-            margin-bottom: 20px;
-            font-size: 2.5rem;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
+            background-color: #111;
+            color: #ffd700;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            padding-top: 10%;
         }
         textarea {
-            width: 600px;
-            height: 180px;
-            max-width: 90%;
             background-color: #1c1c1c;
             color: #ccc;
-            border: 1px solid #555;
-            padding: 10px;
+            border: 1px solid #444;
+            width: 50%;
+            height: 120px;
             font-size: 16px;
-            resize: vertical;
-            border-radius: 5px;
-            margin-bottom: 15px;
+            padding: 10px;
+            resize: none;
         }
         button {
-            background-color: #f4c430;
-            color: #0f0f0f;
+            background-color: #ffd700;
+            color: #000;
             border: none;
-            padding: 12px 24px;
-            font-size: 1rem;
-            border-radius: 5px;
+            padding: 10px 20px;
+            margin-top: 20px;
+            font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
-        button:hover {
-            background-color: #d4a000;
+        .response {
+            margin-top: 40px;
+            color: #fff;
         }
     </style>
 </head>
 <body>
     <h1>Bart is listening...</h1>
-    <form method="post" action="/" id="soulForm">
-        <textarea name="soul" placeholder="Unburden your soul here..." required></textarea>
+    <form method="post">
+        <textarea name="soul" placeholder="Unburden your soul here..." required></textarea><br>
         <button type="submit">Submit to Bart</button>
     </form>
-
-    <script>
-        const textarea = document.querySelector('textarea');
-        textarea.addEventListener("keydown", function (e) {
-            if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                this.form.submit();
-            }
-        });
-    </script>
+    {% if response %}
+        <div class="response">{{ response }}</div>
+    {% endif %}
 </body>
 </html>
