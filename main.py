@@ -6,7 +6,7 @@ from pathlib import Path
 
 app = FastAPI()
 
-# Mount static files (this is what Jinja2's url_for('static', ...) depends on)
+# Mount static directory (so url_for('static', ...) actually works)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Set up templates directory
