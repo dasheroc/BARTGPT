@@ -1,103 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>BART IS LISTENING</title>
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background-color: #0b1320; /* pretentious dark blue */
-            color: #c0c0c0;            /* chrome silver */
-            font-family: 'Orbitron', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding-top: 5vh;
-            margin: 0;
-            height: 100vh;
-            overflow: hidden;
-        }
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 2rem;
-            text-transform: uppercase;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 80%;
-            max-width: 800px;
-        }
-        textarea {
-            width: 100%;
-            height: 200px;
-            padding: 1rem;
-            font-size: 1rem;
-            background-color: #111;
-            color: #ccc;
-            border: 1px solid #444;
-            border-radius: 4px;
-            resize: vertical;
-            font-family: monospace;
-        }
-        button {
-            margin-top: 1.5rem;
-            padding: 0.75rem 2rem;
-            font-size: 1rem;
-            font-weight: bold;
-            background-color: #111;
-            color: #eee;
-            border: 1px solid #444;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-family: 'Orbitron', sans-serif;
-            text-transform: uppercase;
-            width: 60%;
-            max-width: 300px;
-        }
-        button:hover {
-            background-color: #222;
-        }
-        .response {
-            margin-top: 2rem;
-            padding: 1rem;
-            background-color: #1a1a1a;
-            border: 1px solid #444;
-            color: #ccc;
-            width: 80%;
-            max-width: 800px;
-            border-radius: 4px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Bart is listening</title>
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #0b1320;
+      color: #c0c0c0;
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 5vh;
+      margin: 0;
+    }
+    h1 {
+      font-size: 3rem;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+    form {
+      width: 80%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      padding: 1rem;
+      background: #111;
+      color: #ccc;
+      border: 1px solid #444;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.75rem 2rem;
+      background: #111;
+      color: #eee;
+      border: 1px solid #444;
+      border-radius: 6px;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: 'Orbitron', sans-serif;
+      width: 60%;
+      max-width: 300px;
+    }
+    button:hover {
+      background: #222;
+    }
+    .response {
+      margin-top: 2rem;
+      width: 80%;
+      max-width: 800px;
+      background: #1a1a1a;
+      padding: 1rem;
+      border: 1px solid #444;
+      color: #ccc;
+      border-radius: 4px;
+    }
+  </style>
 </head>
 <body>
-    <h1>BART IS LISTENING</h1>
-
-    <form method="post">
-        <textarea name="user_input" placeholder="Unburden your soul here…" required></textarea>
-        <button type="submit">PROCEED</button>
-    </form>
-
-    {% if user_input %}
+  <h1>BART IS LISTENING</h1>
+  <form method="post">
+    <textarea name="user_input" placeholder="Unburden your soul here…" required></textarea>
+    <button type="submit">PROCEED</button>
+  </form>
+  {% if user_input %}
     <div class="response">
-        <strong>Judge:</strong> You said: "{{ user_input }}"
+      <strong>Judge:</strong> You said: "{{ user_input }}"
     </div>
-    {% endif %}
-
-    <script>
-        const textarea = document.querySelector("textarea");
-        const form = document.querySelector("form");
-
-        textarea.addEventListener("keydown", function (e) {
-            if (e.key === "Enter" && !e.shiftKey && textarea.value.trim()) {
-                e.preventDefault();
-                form.submit();
-            }
-        });
-    </script>
+  {% endif %}
+  <script>
+    const ta = document.querySelector("textarea");
+    const form = document.querySelector("form");
+    ta.addEventListener("keydown", e => {
+      if (e.key === "Enter" && !e.shiftKey && ta.value.trim()) {
+        e.preventDefault();
+        form.submit();
+      }
+    });
+  </script>
 </body>
 </html>

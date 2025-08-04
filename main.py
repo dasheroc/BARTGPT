@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -6,10 +6,10 @@ from pathlib import Path
 
 app = FastAPI()
 
-# Mount static directory (so url_for('static', ...) actually works)
+# CRITICAL: Mount static directory with exact name "static"
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Set up templates directory
+# Setup templates directory
 BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
