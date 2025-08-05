@@ -2,96 +2,116 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BART IS LISTENING</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bart is Listening</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Major+Mono+Display&display=swap');
+
     body {
-      margin: 0;
-      background-color: #0c0f17;
-      color: #ccc;
-      font-family: 'Courier New', Courier, monospace;
+      background-color: #050b18;
+      color: #cbd5e1;
+      font-family: 'Major Mono Display', monospace;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      min-height: 100vh;
+      justify-content: flex-start;
+      height: 100vh;
+      margin: 0;
+      padding-top: 2rem;
     }
 
     h1 {
       font-size: 3rem;
-      color: #cbd5e1;
-      letter-spacing: 0.1em;
-    }
-
-    form {
-      width: 80%;
-      max-width: 900px;
+      margin-bottom: 2rem;
+      color: #dbeafe;
     }
 
     textarea {
-      width: 100%;
+      width: 80%;
       height: 300px;
-      background-color: #111;
-      border: 1px solid #555;
-      color: #9fc;
+      background-color: #0d1117;
+      color: #94a3b8;
+      border: 1px solid #475569;
       padding: 1rem;
-      font-family: 'Courier New', monospace;
+      font-family: 'Major Mono Display', monospace;
       font-size: 1rem;
       resize: none;
     }
 
     button {
       margin-top: 1rem;
-      padding: 0.7rem 1.4rem;
-      font-size: 1rem;
-      background-color: #1f2937;
-      color: #fefefe;
-      border: 1px solid #444;
+      padding: 0.75rem 1.5rem;
+      background-color: #0f172a;
+      color: #f1f5f9;
+      border: 1px solid #475569;
       cursor: pointer;
+      font-family: 'Major Mono Display', monospace;
+      font-size: 1rem;
+    }
+
+    button:hover {
+      background-color: #1e293b;
     }
 
     .response {
       margin-top: 2rem;
-      max-width: 900px;
-      color: #8ae;
-      font-style: italic;
+      color: #7dd3fc;
+      width: 80%;
+      text-align: center;
+      font-size: 1rem;
     }
 
-    footer {
-      margin-top: 2rem;
-      color: #5eead4;
-      font-family: monospace;
+    .footer-quote {
+      margin-top: 1.5rem;
+      color: #67e8f9;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
   <h1>BART IS LISTENING</h1>
-  <form method="POST" id="bart-form">
-    <textarea name="soul" placeholder="Unburden your soul here..." required></textarea>
-    <br />
-    <button type="submit">PROCEED</button>
-  </form>
-
-  {% if result %}
-    <div class="response">
-      Bart speaks from the abyss: "{{ result }}"
-    </div>
-  {% endif %}
-
-  <footer>
-    Bart speaks from the abyss: “What time is it?” — curious. But not clever.
-  </footer>
+  <textarea id="userInput" placeholder="Unburden your soul here..."></textarea>
+  <button onclick="submitForm()">PROCEED</button>
+  <div class="response" id="responseText"></div>
+  <div class="footer-quote" id="bartQuote"></div>
 
   <script>
-    const form = document.getElementById("bart-form");
-    const textarea = form.querySelector("textarea");
+    const quotes = [
+      `"What time is it?" — curious. But not clever.`,
+      `"A name isn't an answer. It’s a wound."`,
+      `"What you avoid speaks louder than what you say."`,
+      `"The mirror doesn’t lie. It edits."`
+    ];
 
-    textarea.addEventListener("keydown", function (e) {
+    function getRandomQuote() {
+      return quotes[Math.floor(Math.random() * quotes.length)];
+    }
+
+    function submitForm() {
+      const input = document.getElementById("userInput").value;
+      if (!input.trim()) return;
+
+      fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        const responseDiv = document.getElementById("responseText");
+        responseDiv.innerHTML = `Bart speaks from the abyss: <em>"${data.response}"</em>`;
+        document.getElementById("bartQuote").textContent = "Bart speaks from the abyss: " + getRandomQuote();
+      });
+    }
+
+    document.getElementById("userInput").addEventListener("keydown", function (e) {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
-        form.submit();
+        submitForm();
       }
     });
+
+    document.getElementById("bartQuote").textContent = "Bart speaks from the abyss: " + getRandomQuote();
   </script>
 </body>
 </html>
