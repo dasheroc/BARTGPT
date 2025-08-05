@@ -1,45 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Bart Is Listening</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
-</head>
-<body>
-    <div class="container">
-        <h1>BART IS LISTENING</h1>
-        <textarea id="user-input" placeholder="Unburden your soul here..."></textarea>
-        <button id="submit">PROCEED</button>
-        <div id="response" class="response"></div>
-    </div>
-
-    <script>
-        const input = document.getElementById("user-input");
-        const button = document.getElementById("submit");
-        const responseDiv = document.getElementById("response");
-
-        async function sendMessage() {
-            const message = input.value.trim();
-            if (!message) return;
-
-            const res = await fetch("/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message })
-            });
-
-            const data = await res.json();
-            responseDiv.textContent = data.response;
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Bart is Listening</title>
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" />
+    <style>
+        body {
+            background-color: #0f0f11;
+            color: #c0cad7;
+            font-family: 'Share Tech Mono', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
         }
 
-        button.addEventListener("click", sendMessage);
-        input.addEventListener("keydown", e => {
+        h1 {
+            font-size: 3em;
+            margin-bottom: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        textarea {
+            background-color: #1a1a1d;
+            border: 1px solid #555;
+            color: #c0cad7;
+            width: 600px;
+            height: 200px;
+            padding: 1em;
+            resize: none;
+            font-size: 1em;
+            margin-bottom: 1em;
+        }
+
+        button {
+            background-color: #1a1a1d;
+            color: #c0cad7;
+            border: 1px solid #555;
+            padding: 0.5em 1em;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 1em;
+        }
+
+        #response {
+            margin-top: 2em;
+            font-style: italic;
+            width: 600px;
+            text-align: center;
+        }
+
+        footer {
+            margin-top: 3em;
+            font-size: 0.9em;
+            opacity: 0.6;
+            max-width: 600px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>BART IS LISTENING</h1>
+    <textarea id="userInput" placeholder="Unburden your soul here..."></textarea>
+    <br />
+    <button onclick="sendMessage()">PROCEED</button>
+    <div id="response"></div>
+    <footer>
+        Bart speaks from the abyss: <em>“Anomalisa (2015): Everyone sounds the same to a lonely man—until one woman doesn’t. Curious. But not clever.”</em>
+    </footer>
+
+    <script>
+        document.getElementById("userInput").addEventListener("keydown", function (e) {
             if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
             }
         });
+
+        function sendMessage() {
+            const message = document.getElementById("userInput").value;
+            fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("response").innerText = data.response;
+            })
+            .catch(error => {
+                document.getElementById("response").innerText = "Something broke in the void...";
+            });
+        }
     </script>
 </body>
 </html>
