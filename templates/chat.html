@@ -1,75 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Bart is Listening</title>
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='favicon.ico') }}">
-    <style>
-        body {
-            background-color: #0b0d13;
-            color: #b0bec5;
-            font-family: 'Courier New', Courier, monospace;
-            text-align: center;
-            padding: 40px;
-        }
-
-        h1 {
-            font-size: 3em;
-            margin-bottom: 30px;
-            color: #cfd8dc;
-            letter-spacing: 2px;
-        }
-
-        textarea {
-            width: 80%;
-            height: 250px;
-            background-color: #111316;
-            color: #cfd8dc;
-            font-size: 1.1em;
-            font-family: 'Courier New', Courier, monospace;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        button {
-            margin-top: 25px;
-            padding: 12px 28px;
-            font-size: 1em;
-            background-color: #333;
-            color: #90caf9;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #444;
-        }
-
-        #response {
-            margin-top: 60px;
-            font-size: 1.2em;
-            color: #81d4fa;
-            font-style: italic;
-            max-width: 80%;
-            margin-left: auto;
-            margin-right: auto;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='favicon.ico') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #0c0f14;
+      color: #bcdfff;
+      font-family: 'Share Tech Mono', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+    h1 {
+      font-size: 3em;
+      margin-bottom: 30px;
+      letter-spacing: 3px;
+    }
+    textarea {
+      width: 80%;
+      height: 300px;
+      background-color: #111;
+      color: #aaa;
+      border: 1px solid #555;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1.1em;
+      padding: 20px;
+      resize: none;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 1em;
+      background-color: #222;
+      color: #bcdfff;
+      border: 1px solid #444;
+      cursor: pointer;
+    }
+    .response {
+      margin-top: 60px;
+      font-style: italic;
+      font-size: 1.25em;
+      max-width: 80%;
+      text-align: center;
+      line-height: 1.6;
+    }
+  </style>
+  <title>Bart is Listening</title>
 </head>
 <body>
-    <h1>BART IS LISTENING</h1>
-    <form method="post">
-        <textarea name="user_input" placeholder="Unburden your soul here..." required></textarea>
-        <br>
-        <button type="submit">PROCEED</button>
-    </form>
-
-    {% if response %}
-        <div id="response">
-            Bart speaks from the abyss: “{{ response }}” — curious. But not clever.
-        </div>
-    {% endif %}
+  <h1>BART IS LISTENING</h1>
+  <form method="post" id="bart-form">
+    <textarea name="message" placeholder="Unburden your soul here..." required></textarea>
+    <br />
+    <button type="submit">PROCEED</button>
+  </form>
+  {% if response %}
+    <div class="response">{{ response }}</div>
+  {% endif %}
+  <script>
+    document.getElementById("bart-form").addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        this.submit();
+      }
+    });
+  </script>
 </body>
 </html>
