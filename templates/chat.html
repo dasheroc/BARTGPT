@@ -4,114 +4,115 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Bart is Listening</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Major+Mono+Display&display=swap');
-
     body {
-      background-color: #050b18;
-      color: #cbd5e1;
-      font-family: 'Major Mono Display', monospace;
+      background-color: #060b16;
+      color: #ccc;
+      font-family: 'Share Tech Mono', monospace;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
-      padding-top: 2rem;
+      padding: 3em 1em;
     }
 
     h1 {
-      font-size: 3rem;
-      margin-bottom: 2rem;
-      color: #dbeafe;
+      font-size: 3em;
+      margin-bottom: 1em;
+      color: #ccc;
+      letter-spacing: 0.1em;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 960px;
     }
 
     textarea {
-      width: 80%;
-      height: 300px;
-      background-color: #0d1117;
-      color: #94a3b8;
-      border: 1px solid #475569;
-      padding: 1rem;
-      font-family: 'Major Mono Display', monospace;
-      font-size: 1rem;
-      resize: none;
+      width: 100%;
+      min-height: 300px;
+      background-color: #111;
+      color: #a9b7c6;
+      border: 1px solid #444;
+      font-size: 1em;
+      padding: 1em;
+      resize: vertical;
+      font-family: 'Share Tech Mono', monospace;
+      margin-bottom: 1.5em;
     }
 
     button {
-      margin-top: 1rem;
-      padding: 0.75rem 1.5rem;
-      background-color: #0f172a;
-      color: #f1f5f9;
-      border: 1px solid #475569;
+      background-color: #111;
+      color: #f2f2f2;
+      border: 1px solid #666;
+      padding: 0.8em 2em;
+      font-size: 1em;
       cursor: pointer;
-      font-family: 'Major Mono Display', monospace;
-      font-size: 1rem;
+      font-family: 'Share Tech Mono', monospace;
+      transition: background-color 0.3s, color 0.3s;
     }
 
     button:hover {
-      background-color: #1e293b;
+      background-color: #333;
+      color: #fff;
     }
 
     .response {
-      margin-top: 2rem;
-      color: #7dd3fc;
-      width: 80%;
+      margin-top: 2em;
+      font-style: italic;
+      font-size: 1.1em;
+      color: #4eb3f5;
       text-align: center;
-      font-size: 1rem;
+      max-width: 960px;
+      line-height: 1.5em;
     }
 
-    .footer-quote {
-      margin-top: 1.5rem;
-      color: #67e8f9;
-      font-size: 0.9rem;
+    .footer {
+      margin-top: 2em;
+      font-size: 0.9em;
+      color: #81d8d0;
+      text-align: center;
     }
   </style>
 </head>
 <body>
   <h1>BART IS LISTENING</h1>
-  <textarea id="userInput" placeholder="Unburden your soul here..."></textarea>
-  <button onclick="submitForm()">PROCEED</button>
-  <div class="response" id="responseText"></div>
-  <div class="footer-quote" id="bartQuote"></div>
+  <form method="post" action="/" onsubmit="return handleSubmit()">
+    <textarea name="user_input" placeholder="Unburden your soul here..." required></textarea>
+    <button type="submit">PROCEED</button>
+  </form>
+  {% if response %}
+    <div class="response">Bart speaks from the abyss: "{{ response }}"</div>
+  {% endif %}
+  <div class="footer">
+    Bart speaks from the abyss: “What time is it?” — curious. But not clever.
+  </div>
 
   <script>
-    const quotes = [
-      `"What time is it?" — curious. But not clever.`,
-      `"A name isn't an answer. It’s a wound."`,
-      `"What you avoid speaks louder than what you say."`,
-      `"The mirror doesn’t lie. It edits."`
-    ];
-
-    function getRandomQuote() {
-      return quotes[Math.floor(Math.random() * quotes.length)];
+    function handleSubmit() {
+      const form = document.querySelector("form");
+      const button = form.querySelector("button");
+      button.disabled = true;
+      button.innerText = "Listening...";
+      return true;
     }
 
-    function submitForm() {
-      const input = document.getElementById("userInput").value;
-      if (!input.trim()) return;
-
-      fetch("/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input }),
-      })
-      .then(response => response.json())
-      .then(data => {
-        const responseDiv = document.getElementById("responseText");
-        responseDiv.innerHTML = `Bart speaks from the abyss: <em>"${data.response}"</em>`;
-        document.getElementById("bartQuote").textContent = "Bart speaks from the abyss: " + getRandomQuote();
+    document.addEventListener("DOMContentLoaded", function () {
+      const textarea = document.querySelector("textarea");
+      textarea.focus();
+      textarea.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          this.form.requestSubmit();
+        }
       });
-    }
-
-    document.getElementById("userInput").addEventListener("keydown", function (e) {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        submitForm();
-      }
     });
-
-    document.getElementById("bartQuote").textContent = "Bart speaks from the abyss: " + getRandomQuote();
   </script>
 </body>
 </html>
