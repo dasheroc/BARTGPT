@@ -1,34 +1,53 @@
-from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
+from flask import Flask, render_template, request, jsonify
+import requests
 import random
+import os
 
-app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+app = Flask(__name__)
 
-film_facts = [
-    {
-        "title": "There’s Something About Mary (1998)",
-        "summary": "A man gets a chance to meet up with his dream girl from high school, even though his date with her back then was a complete disaster."
-    },
-    {
-        "title": "Hello, My Name Is Doris (2015)",
-        "summary": "A self-help seminar inspires a sixty-something woman to romantically pursue her younger co-worker."
-    },
-    {
-        "title": "Synecdoche, New York (2008)",
-        "summary": "A theater director builds a life-size replica of New York inside a warehouse as part of his new play."
-    }
-]
+# Load OMDB key from environment or hardcode (bad practice, but your call)
+OMDB_API_KEY = os.getenv("OMDB_API_KEY", "your_actual_api_key_here")
 
-@app.get("/", response_class=HTMLResponse)
-async def read_form(request: Request):
-    return templates.TemplateResponse("chat.html", {"request": request, "response": ""})
+BART_TONE = 'Bart speaks from the abyss: “{}” — curious. But not clever.'
 
-@app.post("/", response_class=HTMLResponse)
-async def handle_form(request: Request, message: str = Form(...)):
-    film = random.choice(film_facts)
-    response = f'Bart speaks from the abyss: “{film["title"]}: {film["summary"]}” — curious. But not clever.'
-    return templates.TemplateResponse("chat.html", {"request": request, "response": response})
+@app.route('/')
+def index():
+    return render_template('chat.html')
+
+@app.route('/get_movie_fact', methods=['POST'])
+def get_movie_fact():
+    user_input = request.form['text'].strip()
+    if not user_input:
+        return jsonify({'fact': "Bart yawns from the void. Say something real."})
+
+    # Query OMDB for movie suggestions
+    try:
+        response = requests.get(
+            "http://www.omdbapi.com/",
+            params={"s": user_input, "apikey": OMDB_API_KEY}
+        )
+        data = response.json()
+        if "Search" in data:
+            movie = random.choice(data["Search"])
+            title = movie.get("Title")
+            year = movie.get("Year")
+
+            # Get detailed plot
+            details = requests.get(
+                "http://www.omdbapi.com/",
+                params={"t": title, "y": year, "apikey": OMDB_API_KEY}
+            ).json()
+
+            plot = details.get("Plot", "No plot found.")
+            if plot != "N/A":
+                full_fact = f"{title} ({year}): {plot}"
+            else:
+                full_fact = f"{title} ({year}): No summary available."
+            return jsonify({'fact': BART_TONE.format(full_fact)})
+        else:
+            return jsonify({'fact': "Bart shrugs. No cinematic match found."})
+    except Exception as e:
+        return jsonify({'fact': f"Bart grimaces. Something broke: {str(e)}"})
+
+if __name__ == '__main__':
+    app.run(debug=True)
