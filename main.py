@@ -1,7 +1,6 @@
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
 import requests
 import os
 from dotenv import load_dotenv
@@ -9,26 +8,24 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
 
-OMDB_API_KEY = os.getenv("OMDB_API_KEY", "demo")  # Replace "demo" with your key if not using .env
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-@app.get("/", response_class=HTMLResponse)
-async def index(request: Request):
-    return templates.TemplateResponse("chat.html", {"request": request, "result": None})
+@app.post("/confess")
+async def confess(soul: str = Form(...)):
+    api_key = os.getenv("OMDB_API_KEY")
+    url = f"http://www.omdbapi.com/?t={soul}&apikey={api_key}"
 
-@app.post("/", response_class=HTMLResponse)
-async def process_form(request: Request, soul: str = Form(...)):
-    query = soul.strip()
-    if not query:
-        result = "Bart hears nothing. Try again."
+    response = requests.get(url)
+    data = response.json()
+
+    if data.get("Response") == "True":
+        summary = data.get("Plot", "No plot found.")
+        return {"omdb_fact": summary}
     else:
-        response = requests.get(
-            "https://www.omdbapi.com/",
-            params={"apikey": OMDB_API_KEY, "t": query}
-        )
-        data = response.json()
-        result = data.get("Plot") or f"Bart found nothing for '{query}'."
-
-    return templates.TemplateResponse("chat.html", {"request": request, "result": result})
+        return {"omdb_fact": "Bart finds no trace of that film in the abyss."}
