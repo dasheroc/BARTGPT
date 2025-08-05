@@ -6,3 +6,4 @@ python-multipart
 pytz
 requests
 uvicorn
+gunicorn 
