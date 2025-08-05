@@ -63,14 +63,29 @@
             background-color: #000;
             color: #ffffff;
         }
+
+        .response {
+            margin-top: 30px;
+            font-size: 1.1em;
+            color: #8cc;
+            text-align: center;
+            max-width: 80%;
+        }
     </style>
 </head>
 <body>
     <h1>BART IS LISTENING</h1>
-    <form method="post">
+
+    <form method="post" action="/sealema">
         <textarea name="user_input" placeholder="Unburden your soul here..." required></textarea>
         <button type="submit">PROCEED</button>
     </form>
+
+    {% if response %}
+        <div class="response">
+            {{ response }}
+        </div>
+    {% endif %}
 
     <script>
         // Submit on Enter (unless Shift+Enter)
