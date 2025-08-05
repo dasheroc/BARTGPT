@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Bart Is Listening</title>
+    <title>BartGPT</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #0a0f1c;
-            color: #c7cdd3;
+            background-color: #0a0e17;
+            color: #c5c6c7;
             font-family: 'Share Tech Mono', monospace;
             display: flex;
             flex-direction: column;
@@ -16,68 +16,85 @@
             height: 100vh;
             margin: 0;
         }
+
         h1 {
             font-size: 3rem;
-            margin-bottom: 30px;
-            text-align: center;
+            color: #b0b4bd;
+            margin-bottom: 2rem;
         }
+
         form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             width: 80%;
-            max-width: 800px;
+            max-width: 900px;
         }
+
         textarea {
             width: 100%;
             height: 300px;
-            background-color: #0f111a;
-            color: #c7cdd3;
-            font-size: 1rem;
-            padding: 20px;
-            border: 1px solid #333;
-            resize: none;
+            background-color: #111;
+            color: #87ceeb;
+            border: 1px solid #444;
+            padding: 1rem;
             font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            resize: none;
         }
+
         button {
-            margin-top: 20px;
-            background-color: #11131a;
-            color: #eee;
-            border: 1px solid #555;
-            padding: 10px 20px;
-            font-size: 1rem;
+            margin-top: 1rem;
+            padding: 0.75rem 2rem;
+            background-color: #1f1f1f;
+            color: #f0f0f0;
+            border: 1px solid #888;
             cursor: pointer;
             font-family: 'Share Tech Mono', monospace;
-        }
-        .omdb-response {
-            margin-top: 40px;
             font-size: 1rem;
-            font-style: italic;
-            color: #87cefa;
-            text-align: center;
-            width: 70%;
         }
+
+        .response, .footer {
+            margin-top: 2rem;
+            width: 80%;
+            max-width: 900px;
+            color: #80c7e0;
+            font-style: italic;
+        }
+
         .footer {
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: #8ff;
+            color: #8edce6;
             text-align: center;
+            font-size: 0.95rem;
         }
     </style>
 </head>
 <body>
     <h1>BART IS LISTENING</h1>
     <form method="post">
-        <textarea name="soul" required placeholder="Unburden your soul here...">{{ input_text }}</textarea>
-        <button type="submit">PROCEED</button>
+        <textarea name="soul" placeholder="Unburden your soul here..." required autofocus></textarea>
+        <div style="text-align: center;">
+            <button type="submit">PROCEED</button>
+        </div>
     </form>
+
     {% if response %}
-    <div class="omdb-response">
-        Bart speaks from the abyss: "{{ response }}"
-    </div>
+        <div class="response">
+            Bart speaks from the abyss: "<span>{{ response }}</span>"
+        </div>
     {% endif %}
+
     <div class="footer">
         Bart speaks from the abyss: “What time is it?” – curious. But not clever.
     </div>
+
+    <script>
+        const form = document.querySelector('form');
+        const textarea = document.querySelector('textarea');
+
+        textarea.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                form.submit();
+            }
+        });
+    </script>
 </body>
 </html>
