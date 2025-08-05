@@ -1,53 +1,31 @@
-from flask import Flask, render_template, request, jsonify
-import requests
+from flask import Flask, render_template, request
 import random
 import os
+from dotenv import load_dotenv
+import openai
+
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = Flask(__name__)
 
-# Load OMDB key from environment or hardcode (bad practice, but your call)
-OMDB_API_KEY = os.getenv("OMDB_API_KEY", "your_actual_api_key_here")
+film_facts = [
+    "Her (2013): A man falls in love with an AI. Curious. But not clever.",
+    "The Lobster (2015): Single people are turned into animals. Curious. But not clever.",
+    "Synecdoche, New York (2008): A theater director builds a life-size replica of New York inside a warehouse. Curious. But not clever.",
+    "The Double Life of Veronique (1991): Two women share a mysterious connection. Curious. But not clever.",
+    "Enemy (2013): A man meets his exact double. Curious. But not clever.",
+    "Anomalisa (2015): Everyone sounds the same to a lonely man—until one woman doesn’t. Curious. But not clever.",
+    "Holy Motors (2012): A man shifts identities across surreal vignettes in a white limo. Curious. But not clever.",
+    "There’s Something About Mary (1998): A man meets up with his dream girl from high school, even though his date back then was a complete disaster. Curious. But not clever.",
+    "Hello, My Name Is Doris (2015): A self-help seminar inspires a sixty-something woman to romantically pursue her younger co-worker. Curious. But not clever."
+]
 
-BART_TONE = 'Bart speaks from the abyss: “{}” — curious. But not clever.'
-
-@app.route('/')
+@app.route("/", methods=["GET", "POST"])
 def index():
-    return render_template('chat.html')
+    if request.method == "POST":
+        return render_template("chat.html", fact=random.choice(film_facts))
+    return render_template("chat.html", fact=random.choice(film_facts))
 
-@app.route('/get_movie_fact', methods=['POST'])
-def get_movie_fact():
-    user_input = request.form['text'].strip()
-    if not user_input:
-        return jsonify({'fact': "Bart yawns from the void. Say something real."})
-
-    # Query OMDB for movie suggestions
-    try:
-        response = requests.get(
-            "http://www.omdbapi.com/",
-            params={"s": user_input, "apikey": OMDB_API_KEY}
-        )
-        data = response.json()
-        if "Search" in data:
-            movie = random.choice(data["Search"])
-            title = movie.get("Title")
-            year = movie.get("Year")
-
-            # Get detailed plot
-            details = requests.get(
-                "http://www.omdbapi.com/",
-                params={"t": title, "y": year, "apikey": OMDB_API_KEY}
-            ).json()
-
-            plot = details.get("Plot", "No plot found.")
-            if plot != "N/A":
-                full_fact = f"{title} ({year}): {plot}"
-            else:
-                full_fact = f"{title} ({year}): No summary available."
-            return jsonify({'fact': BART_TONE.format(full_fact)})
-        else:
-            return jsonify({'fact': "Bart shrugs. No cinematic match found."})
-    except Exception as e:
-        return jsonify({'fact': f"Bart grimaces. Something broke: {str(e)}"})
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
