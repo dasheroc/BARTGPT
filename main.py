@@ -7,46 +7,37 @@ import requests
 
 app = FastAPI()
 
-# Mount static directory for favicon and other assets
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# --- Static File Mounting ---
+static_dir = "static"
+if os.path.isdir(static_dir):
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+else:
+    print(f"⚠️ Static directory '{static_dir}' not found at startup.")
 
 templates = Jinja2Templates(directory="templates")
-
-OMDB_API_KEY = os.getenv("OMDB_API_KEY")
 
 @app.get("/", response_class=HTMLResponse)
 async def get_form(request: Request):
     return templates.TemplateResponse("chat.html", {"request": request})
 
 @app.post("/", response_class=HTMLResponse)
-async def post_form(request: Request, soul: str = Form(...)):
-    user_input = soul.strip()
-    response_text = ""
+async def post_form(request: Request, query: str = Form(...)):
+    api_key = os.getenv("OMDB_API_KEY")
+    if not api_key:
+        return templates.TemplateResponse("chat.html", {
+            "request": request,
+            "result": "⚠️ OMDB API key is missing. Check environment settings."
+        })
 
-    if OMDB_API_KEY and user_input:
-        omdb_url = f"http://www.omdbapi.com/?t={user_input}&apikey={OMDB_API_KEY}"
-        try:
-            res = requests.get(omdb_url)
-            data = res.json()
-
-            if data.get("Response") == "True":
-                response_text = (
-                    f"🎬 <strong>{data.get('Title')}</strong> ({data.get('Year')})<br>"
-                    f"⭐ <em>{data.get('imdbRating')}/10</em> on IMDb<br>"
-                    f"📜 {data.get('Plot')}<br>"
-                    f"🎥 Directed by: {data.get('Director')}<br>"
-                    f"🎭 Starring: {data.get('Actors')}"
-                )
-            else:
-                response_text = f"🐚 Alas, no film by the name of ‘{user_input}’ could be conjured."
-
-        except Exception as e:
-            response_text = f"⚠️ The Oracle stammered: {str(e)}"
-    else:
-        response_text = "🐚 Bart contemplates in silence. Say something of substance."
+    url = f"http://www.omdbapi.com/?apikey={api_key}&t={query}"
+    try:
+        response = requests.get(url)
+        data = response.json()
+        result = data.get("Plot", "No plot found.") if data.get("Response") == "True" else "Movie not found."
+    except Exception as e:
+        result = f"Error retrieving data: {e}"
 
     return templates.TemplateResponse("chat.html", {
         "request": request,
-        "response": response_text,
-        "original": user_input
+        "result": result
     })
