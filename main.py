@@ -1,71 +1,58 @@
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
-from dotenv import load_dotenv
-import os
 import random
-import datetime
 import requests
+import os
+from dotenv import load_dotenv
 
+# Load environment variables
 load_dotenv()
 OMDB_API_KEY = os.getenv("OMDB_API_KEY")
 
 app = FastAPI()
-
 templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 oracle_tones = [
-    "Bart speaks from the abyss:",
-    "The oracle intones without irony:",
-    "With a sigh, Bart replies:",
-    "Bart does not blink as he says:",
-    "From the void, a murmur:"
+    "Bart whispers through gritted teeth:",
+    "Bart shrugs and lights a clove cigarette:",
+    "Bart closes the book mid-sentence and says:",
+    "Bart, unimpressed but intrigued, remarks:",
+    "Bart mutters like an overeducated ghost:",
+    "Bart speaks from the abyss:"
 ]
 
 @app.get("/", response_class=HTMLResponse)
-async def get_root(request: Request):
-    return templates.TemplateResponse("chat.html", {"request": request, "response": None})
-
-
-def fetch_film_data(title: str) -> str:
-    url = "http://www.omdbapi.com/"
-    params = {
-        "apikey": OMDB_API_KEY,
-        "t": title
-    }
-
-    response = requests.get(url, params=params)
-    data = response.json()
-
-    if data.get("Response") == "False":
-        return f"No results for “{title}.” Bart exhales slowly."
-
-    title = data.get("Title", "Unknown")
-    year = data.get("Year", "????")
-    director = data.get("Director", "???")
-    plot = data.get("Plot", "No summary. Just vibes.")
-
-    return f"{title} ({year}) — Directed by {director}. {plot}"
-
+async def get_chat(request: Request):
+    return templates.TemplateResponse("chat.html", {"request": request, "response": ""})
 
 @app.post("/sealema", response_class=HTMLResponse)
 async def post_sealema(request: Request, user_input: str = Form(...)):
-    user_text = user_input.strip().lower()
-
-    if not user_text:
+    if not user_input.strip():
         response = "You said nothing. Bart is unimpressed."
-
-    elif user_text.startswith("film:"):
-        title = user_input.split(":", 1)[1].strip()
-        response = fetch_film_data(title)
-
+    elif user_input.lower().startswith("film:"):
+        query = user_input[5:].strip()
+        if OMDB_API_KEY:
+            api_url = f"http://www.omdbapi.com/?t={query}&apikey={OMDB_API_KEY}"
+            res = requests.get(api_url)
+            if res.status_code == 200:
+                data = res.json()
+                if data.get("Response") == "True":
+                    response = (
+                        f"**{data['Title']}** ({data['Year']})\n"
+                        f"Directed by {data.get('Director', 'Unknown')}.\n"
+                        f"Plot: {data.get('Plot', 'No summary available.')}"
+                    )
+                else:
+                    response = f"No film found matching '{query}'. Try again—clearly, you're thinking of something obscure."
+            else:
+                response = "OMDb query failed. Bart raises an eyebrow at your API reliability."
+        else:
+            response = "OMDb API key missing. Bart refuses to proceed without credentials."
     else:
         response = f"“{user_input}” — curious. But not clever."
 
     final_output = f"{random.choice(oracle_tones)} {response}"
-
     return templates.TemplateResponse("chat.html", {
         "request": request,
         "response": final_output
