@@ -1,9 +1,8 @@
 fastapi
-uvicorn
-openai
-pytz
 Flask
+openai
+python-dotenv
 python-multipart
-
-
-
+pytz
+requests
+uvicorn
