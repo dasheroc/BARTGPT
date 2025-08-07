@@ -1,49 +1,40 @@
 from flask import Flask, render_template, request, jsonify
-import openai
-import os
 import requests
-from dotenv import load_dotenv
+import os
 
-load_dotenv()
+app = Flask(__name__)
 
-app = Flask(__name__, static_folder='static')
-openai.api_key = os.getenv("OPENAI_API_KEY")
-omdb_api_key = os.getenv("OMDB_API_KEY")
+OMDB_API_KEY = os.getenv("OMDB_API_KEY")  # Optional safety fallback
 
-
-@app.route('/')
+@app.route("/")
 def index():
     return render_template("chat.html")
 
-
-@app.route('/chat', methods=['POST'])
+@app.route("/chat", methods=["POST"])
 def chat():
+    data = request.get_json()
+    user_input = data.get("input", "").strip()
+
+    if not user_input:
+        return jsonify({"response": "Bart stares silently. Try again."})
+
     try:
-        user_message = request.get_json()["message"]
-
-        # Try OMDB first if it's a film
-        omdb_url = f"http://www.omdbapi.com/?t={user_message}&apikey={omdb_api_key}"
-        omdb_response = requests.get(omdb_url).json()
-
-        if omdb_response.get("Response") == "True":
-            title = omdb_response.get("Title", "Unknown Title")
-            year = omdb_response.get("Year", "N/A")
-            plot = omdb_response.get("Plot", "No plot available.")
-            return jsonify(response=f"*{title}* ({year}): {plot}")
-
-        # Fallback to GPT if not a valid film
-        completion = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": user_message}],
-            temperature=0.7
+        response = requests.get(
+            "http://www.omdbapi.com/",
+            params={"t": user_input, "apikey": OMDB_API_KEY or "your-default-key"}
         )
-        reply = completion.choices[0].message.content.strip()
-        return jsonify(response=reply)
+        movie = response.json()
 
+        if movie.get("Response") == "True":
+            title = movie.get("Title", "Unknown")
+            year = movie.get("Year", "Unknown")
+            plot = movie.get("Plot", "No plot available.")
+            return jsonify({"response": f"🧠 {title} ({year}): {plot}"})
+        else:
+            return jsonify({"response": f"Bart squints. He’s never heard of '{user_input}'."})
     except Exception as e:
-        print(f"Error: {e}")
-        return jsonify(response="Bart has laryngitis. Something went wrong."), 500
+        print("Error in /chat:", e)
+        return jsonify({"response": "Bart choked on your input. Try again later."})
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)

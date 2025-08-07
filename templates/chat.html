@@ -1,125 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Bart is Listening</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <style>
-        body {
-            background-color: #121212;
-            color: #cbd5e1;
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            height: 100vh;
-            margin: 0;
-            padding-top: 40px;
-        }
-
-        h1 {
-            font-size: 3em;
-            letter-spacing: 0.1em;
-            margin-bottom: 30px;
-        }
-
-        textarea {
-            width: 60vw;
-            height: 300px;
-            background-color: #1e1e1e;
-            color: #cbd5e1;
-            border: 1px solid #cbd5e1;
-            border-radius: 4px;
-            padding: 10px;
-            font-size: 1em;
-            resize: none;
-            margin-bottom: 20px;
-        }
-
-        button {
-            background-color: #2c2c2c;
-            color: #cbd5e1;
-            border: 1px solid #cbd5e1;
-            padding: 10px 20px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out;
-        }
-
-        button:hover {
-            background-color: #383838;
-        }
-
-        #response {
-            margin-top: 30px;
-            font-size: 1.1em;
-            text-align: center;
-            max-width: 70%;
-            color: #94a3b8;
-        }
-
-        .footer {
-            margin-top: 40px;
-            font-size: 0.9em;
-            color: #64748b;
-            text-align: center;
-            padding-bottom: 20px;
-            max-width: 80%;
-        }
-
-        em {
-            font-style: italic;
-            color: #94bfe9;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bart Is Listening</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #bcc7d6;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      padding: 2rem;
+    }
+    textarea {
+      width: 60%;
+      height: 200px;
+      background: #1a1a1a;
+      color: #bcc7d6;
+      border: 1px solid #888;
+      padding: 1rem;
+      font-size: 1rem;
+    }
+    button {
+      background: #222;
+      color: #bcc7d6;
+      padding: 0.6rem 1.2rem;
+      border: 1px solid #888;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+    #response {
+      margin-top: 2rem;
+      font-style: italic;
+    }
+  </style>
 </head>
 <body>
-    <h1>BART IS LISTENING</h1>
-    <textarea id="userInput" placeholder="Unburden your soul here..."></textarea>
-    <button onclick="sendMessage()">PROCEED</button>
+  <h1>BART IS LISTENING</h1>
 
-    <div id="response"></div>
+  <form id="soulForm">
+    <textarea id="user_input" placeholder="Unburden your soul here..."></textarea><br>
+    <button type="submit">PROCEED</button>
+  </form>
 
-    <div class="footer">
-        <p><em>Bart speaks from the abyss: “Anomalisa (2015): Everyone sounds the same to a lonely man—until one woman doesn’t. Curious. But not clever.”</em></p>
-    </div>
+  <div id="response"></div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const textarea = document.getElementById("userInput");
+  <script>
+    document.getElementById("soulForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
 
-            textarea.addEventListener("keydown", function (e) {
-                if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
+      const input = document.getElementById("user_input").value;
+
+      try {
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ input: input })
         });
 
-        function sendMessage() {
-            const message = document.getElementById("userInput").value.trim();
-            if (!message) return;
-
-            fetch("/chat", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ message })
-            })
-            .then(response => {
-                if (!response.ok) throw new Error("Network response was not ok.");
-                return response.json();
-            })
-            .then(data => {
-                document.getElementById("response").innerText = data.response;
-            })
-            .catch(error => {
-                document.getElementById("response").innerText = "Bart has laryngitis. Something went wrong.";
-                console.error("Error:", error);
-            });
-        }
-    </script>
+        const data = await res.json();
+        document.getElementById("response").innerText = data.response || "Bart says nothing.";
+      } catch (err) {
+        document.getElementById("response").innerText = "Bart has laryngitis. Something went wrong.";
+        console.error("Bart error:", err);
+      }
+    });
+  </script>
 </body>
 </html>
