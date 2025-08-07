@@ -1,72 +1,49 @@
+from flask import Flask, render_template, request, jsonify
+import openai
 import os
-import json
 import requests
-from flask import Flask, request, jsonify, render_template
 from dotenv import load_dotenv
 
 load_dotenv()
 
-app = Flask(__name__)
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OMDB_API_KEY = os.getenv("OMDB_API_KEY")
+app = Flask(__name__, static_folder='static')
+openai.api_key = os.getenv("OPENAI_API_KEY")
+omdb_api_key = os.getenv("OMDB_API_KEY")
 
-@app.route("/")
+
+@app.route('/')
 def index():
     return render_template("chat.html")
 
-@app.route("/chat", methods=["POST"])
+
+@app.route('/chat', methods=['POST'])
 def chat():
-    data = request.get_json()
-    message = data.get("message", "").strip()
+    try:
+        user_message = request.get_json()["message"]
 
-    if not message:
-        return jsonify({"response": "Silence is not the same as insight."})
+        # Try OMDB first if it's a film
+        omdb_url = f"http://www.omdbapi.com/?t={user_message}&apikey={omdb_api_key}"
+        omdb_response = requests.get(omdb_url).json()
 
-    if message.lower().startswith("film:") or message.lower().startswith("movie:"):
-        title = message.split(":", 1)[-1].strip()
-        omdb_response = requests.get(f"http://www.omdbapi.com/?t={title}&apikey={OMDB_API_KEY}")
-        if omdb_response.status_code == 200:
-            film_data = omdb_response.json()
-            if film_data.get("Response") == "True":
-                response = f"{film_data.get('Title')} ({film_data.get('Year')}): {film_data.get('Plot')}"
-            else:
-                response = f"Bart searched. Bart found nothing on \"{title}\"."
-        else:
-            response = "Bart’s reach exceeded OMDb’s grasp."
-    else:
-        headers = {
-            "Authorization": f"Bearer {OPENAI_API_KEY}",
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "model": "gpt-4o",
-            "messages": [
-                {
-                    "role": "system",
-                    "content": (
-                        "You are Bart, a sharp-witted, espresso-fueled confidant. Respond with emotional precision, "
-                        "clarity, and taste. Be pithy, never pandering. Wry, never mean. Preserve Rashad’s tone. "
-                        "Do not mimic ChatGPT or use disclaimers."
-                    )
-                },
-                {
-                    "role": "user",
-                    "content": message
-                }
-            ]
-        }
+        if omdb_response.get("Response") == "True":
+            title = omdb_response.get("Title", "Unknown Title")
+            year = omdb_response.get("Year", "N/A")
+            plot = omdb_response.get("Plot", "No plot available.")
+            return jsonify(response=f"*{title}* ({year}): {plot}")
 
-        response = requests.post("https://api.openai.com/v1/chat/completions",
-                                 headers=headers, json=payload)
+        # Fallback to GPT if not a valid film
+        completion = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": user_message}],
+            temperature=0.7
+        )
+        reply = completion.choices[0].message.content.strip()
+        return jsonify(response=reply)
 
-        if response.status_code == 200:
-            response_text = response.json()["choices"][0]["message"]["content"]
-        else:
-            response_text = "Bart has laryngitis. Something went wrong."
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify(response="Bart has laryngitis. Something went wrong."), 500
 
-        response = response_text
 
-    return jsonify({"response": response})
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)

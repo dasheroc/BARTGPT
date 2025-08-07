@@ -1,9 +1,7 @@
-fastapi
 Flask
 openai
+requests
 python-dotenv
 python-multipart
 pytz
-requests
 uvicorn
-gunicorn 
