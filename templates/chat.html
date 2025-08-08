@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Bart Interface</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}?v=judgment" type="image/x-icon">
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
     body {
@@ -21,84 +22,71 @@
 
     h1 {
       font-size: 2.5rem;
-      color: #cfd8dc;
-      text-align: center;
       margin-bottom: 2rem;
-      letter-spacing: 0.1em;
+      text-align: center;
     }
 
     textarea {
+      width: 90%;
+      max-width: 900px;
+      height: 300px;
       background-color: #111;
       color: #cfd8dc;
-      width: 80vw;
-      height: 300px;
+      font-family: 'Share Tech Mono', monospace;
       font-size: 1rem;
       padding: 1rem;
       border: 1px solid #444;
-      resize: vertical;
-      font-family: 'Share Tech Mono', monospace;
+      resize: none;
     }
 
     button {
       margin-top: 1rem;
-      padding: 0.7rem 1.5rem;
-      font-size: 1rem;
-      font-family: 'Share Tech Mono', monospace;
-      background-color: #222;
-      color: #f1f1f1;
-      border: 1px solid #555;
-      border-radius: 5px;
+      padding: 0.75rem 1.5rem;
+      background-color: #333;
+      color: #fff;
+      border: none;
       cursor: pointer;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
     }
 
     button:hover {
-      background-color: #333;
+      background-color: #555;
     }
 
-    #response {
+    .response {
       margin-top: 2rem;
       font-style: italic;
-      color: #90caf9;
-      max-width: 80vw;
+      font-size: 1rem;
       text-align: center;
+      max-width: 900px;
+      padding: 0 1rem;
+      color: #91d0f0;
     }
   </style>
 </head>
 <body>
   <h1>BART IS LISTENING</h1>
-  <textarea id="input" placeholder="Unburden your soul here..."></textarea>
-  <button id="proceed">PROCEED</button>
-  <div id="response"></div>
-
+  <form method="POST" id="chat-form">
+    <textarea name="user_input" placeholder="Unburden your soul here..." required></textarea>
+    <br />
+    <button type="submit">PROCEED</button>
+  </form>
+  {% if response %}
+    <div class="response">{{ response }}</div>
+  {% endif %}
   <script>
-    async function sendInput() {
-      const userInput = document.getElementById("input").value.trim();
-      const responseDiv = document.getElementById("response");
+    document.getElementById("chat-form").addEventListener("submit", function(e) {
+      const btn = this.querySelector("button");
+      btn.disabled = true;
+      btn.innerText = "Summoning Bart...";
+    });
 
-      if (!userInput) {
-        responseDiv.textContent = "🧠 Bart raises an eyebrow. Say more.";
-        return;
-      }
-
-      const res = await fetch("/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ user_input: userInput }),
-      });
-
-      const data = await res.json();
-      responseDiv.textContent = data.response;
-    }
-
-    document.getElementById("proceed").addEventListener("click", sendInput);
-
-    // Enable Enter key to trigger PROCEED unless Shift is held
-    document.getElementById("input").addEventListener("keydown", function (event) {
-      if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        document.getElementById("proceed").click();
+    document.querySelector("textarea").addEventListener("keydown", function(e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        document.getElementById("chat-form").requestSubmit();
       }
     });
   </script>
