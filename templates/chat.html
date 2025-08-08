@@ -2,86 +2,87 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Bart is Listening</title>
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <title>Bart Is Listening</title>
   <style>
     body {
-      background-color: #111;
-      color: #d6d6d6;
-      font-family: 'Courier New', monospace;
-      text-align: center;
+      background-color: #0a0d14;
+      color: #dce3ec;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
       margin: 0;
-      padding: 2em;
+      padding-top: 40px;
     }
 
     h1 {
-      font-size: 2.5em;
-      margin-bottom: 1em;
-      color: #b2c4d6;
+      font-size: 2.5rem;
+      color: #cdd9e5;
       letter-spacing: 2px;
+      margin-bottom: 20px;
     }
 
     textarea {
-      width: 60%;
-      height: 200px;
-      background-color: #1c1c1c;
-      color: #d6d6d6;
-      font-size: 1.1em;
-      padding: 1em;
-      border: 1px solid #999;
+      background-color: #111;
+      color: #cdd9e5;
+      font-family: 'Courier New', Courier, monospace;
+      width: 80%;
+      height: 250px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
       resize: vertical;
     }
 
     button {
-      margin-top: 1em;
-      padding: 0.6em 1.2em;
-      font-size: 1em;
+      margin-top: 20px;
       background-color: #333;
       color: #f0f0f0;
-      border: 1px solid #666;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
       cursor: pointer;
+      font-family: 'Courier New', Courier, monospace;
     }
 
     button:hover {
-      background-color: #555;
+      background-color: #444;
     }
 
-    .response {
-      margin-top: 2em;
+    #response {
+      margin-top: 30px;
       font-style: italic;
-      color: #d0d0d0;
-    }
-
-    .emoji {
-      font-size: 1.5em;
-      margin-right: 0.5em;
+      font-size: 1.1rem;
+      color: #9ae3ff;
+      text-align: center;
+      max-width: 80%;
     }
   </style>
 </head>
-
 <body>
   <h1>BART IS LISTENING</h1>
-  
   <form id="soulForm">
-    <textarea id="input" name="user_input" required autofocus> </textarea><br />
+    <textarea id="input" placeholder="Unburden your soul here..." required></textarea>
+    <br />
     <button type="submit" id="proceed">PROCEED</button>
   </form>
-
-  <div class="response">
-    <span class="emoji">🧠</span>
-    <span id="response">{{ response }}</span>
-  </div>
+  <div id="response"></div>
 
   <script>
     document.getElementById("soulForm").addEventListener("submit", async function (event) {
       event.preventDefault();
+      const input = document.getElementById("input").value.trim();
+      if (!input) return;
 
-      const input = document.getElementById("input").value;
       try {
         const res = await fetch("/chat", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_input: input })
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ input }),
         });
 
         const data = await res.json();
@@ -93,13 +94,11 @@
     });
 
     // Enable Enter key to trigger the PROCEED button
-    document.addEventListener("DOMContentLoaded", function () {
-      document.getElementById("input").addEventListener("keydown", function (event) {
-        if (event.key === "Enter" && !event.shiftKey) {
-          event.preventDefault(); // prevent newline
-          document.getElementById("proceed").click();
-        }
-      });
+    document.getElementById("input").addEventListener("keydown", function (event) {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault(); // prevent newline
+        document.getElementById("proceed").click();
+      }
     });
   </script>
 </body>
