@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bart Interface</title>
-  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}?v=judgment" type="image/x-icon">
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}?v=judgment" type="image/x-icon" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
   <style>
     body {
       background-color: #0b0e16;
@@ -22,68 +22,58 @@
 
     h1 {
       font-size: 2.5rem;
-      margin-bottom: 2rem;
-      text-align: center;
+      margin-bottom: 1.5rem;
     }
 
     textarea {
-      width: 90%;
-      max-width: 900px;
-      height: 300px;
+      width: 80vw;
+      max-width: 800px;
+      height: 200px;
       background-color: #111;
       color: #cfd8dc;
       font-family: 'Share Tech Mono', monospace;
-      font-size: 1rem;
+      border: 1px solid #333;
       padding: 1rem;
-      border: 1px solid #444;
       resize: none;
+      font-size: 1rem;
     }
 
     button {
       margin-top: 1rem;
-      padding: 0.75rem 1.5rem;
       background-color: #333;
       color: #fff;
+      font-family: 'Share Tech Mono', monospace;
+      padding: 0.75rem 2rem;
       border: none;
       cursor: pointer;
-      font-family: 'Share Tech Mono', monospace;
       font-size: 1rem;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #555;
     }
 
     .response {
       margin-top: 2rem;
-      font-style: italic;
-      font-size: 1rem;
+      font-size: 1.25rem;
+      color: #7fffd4;
       text-align: center;
-      max-width: 900px;
-      padding: 0 1rem;
-      color: #91d0f0;
+      max-width: 800px;
     }
   </style>
 </head>
 <body>
   <h1>BART IS LISTENING</h1>
-  <form method="POST" id="chat-form">
+  <form id="chat-form" method="POST">
     <textarea name="user_input" placeholder="Unburden your soul here..." required></textarea>
     <br />
     <button type="submit">PROCEED</button>
   </form>
-  {% if response %}
-    <div class="response">{{ response }}</div>
-  {% endif %}
-  <script>
-    document.getElementById("chat-form").addEventListener("submit", function(e) {
-      const btn = this.querySelector("button");
-      btn.disabled = true;
-      btn.innerText = "Summoning Bart...";
-    });
 
-    document.querySelector("textarea").addEventListener("keydown", function(e) {
+  {% if response %}
+    <div class="response">
+      Bart speaks from the abyss: “{{ response }}”
+    </div>
+  {% endif %}
+
+  <script>
+    document.querySelector("textarea").addEventListener("keydown", function (e) {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         document.getElementById("chat-form").requestSubmit();
