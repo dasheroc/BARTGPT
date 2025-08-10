@@ -1,32 +1,53 @@
-from flask import Flask, render_template, request
-import requests
+from flask import Flask, render_template, request, jsonify
+import os, requests
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET", "POST"])
+OMDB_KEY = os.getenv("OMDB_API_KEY", "")  # optional; page still works without
+
+@app.get("/")
+def home():
+    # show the page with default line
+    return render_template("chat.html", response="")
+
+@app.post("/chat")
 def chat():
-    if request.method == "POST":
-        user_input = request.form["user_input"]
+    user_input = (request.form.get("user_input") or "").strip()
 
-        # You can swap this block with your own logic
-        url = f"http://www.omdbapi.com/?t={user_input}&apikey=YOUR_OMDB_API_KEY"
+    # empty guard
+    if not user_input:
+        return render_template("chat.html",
+                               response="Bart stares silently. Try again.")
+
+    # simple film intent: a single word or two that looks like a title
+    should_try_omdb = OMDB_KEY and len(user_input.split()) <= 6
+
+    if should_try_omdb:
         try:
-            resp = requests.get(url)
-            if resp.status_code == 200:
-                m = resp.json()
-                if m.get("Response") == "True":
-                    title = m.get("Title")
-                    year = m.get("Year")
-                    plot = m.get("Plot")
-                    return render_template("chat.html", response=f"{title} ({year}): {plot}")
-                else:
-                    return render_template("chat.html", response=f"Bart has no record of “{user_input}”.")
+            r = requests.get(
+                "https://www.omdbapi.com/",
+                params={"t": user_input, "apikey": OMDB_KEY},
+                timeout=6
+            )
+            if r.status_code == 200:
+                data = r.json()
+                if data.get("Response") == "True":
+                    title = data.get("Title")
+                    year = data.get("Year")
+                    plot = data.get("Plot")
+                    return render_template(
+                        "chat.html",
+                        response=f"{title} ({year}): {plot}"
+                    )
         except Exception:
-            pass
+            pass  # fall through to default line
 
-        return render_template("chat.html", response="Something went wrong—Bart is confounded.")
-
-    return render_template("chat.html")
+    # fallback snark
+    return render_template(
+        "chat.html",
+        response='Bart speaks from the abyss: “What time is it?” — curious. But not clever.'
+    )
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Local dev only. Render uses your Procfile: `web: gunicorn main:app`
+    app.run(host="0.0.0.0", port=8000, debug=True)
