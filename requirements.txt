@@ -1,11 +1,6 @@
-gunicorn
-Flask
-openai
-requests
-python-dotenv
-python-multipart
-pytz
+fastapi
 uvicorn
-Flask==3.0.3
-gunicorn==21.2.0
-requests==2.32.3
+openai
+pytz
+Flask
+python-multipart
