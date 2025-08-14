@@ -1,80 +1,66 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>BART IS LISTENING</title>
     <style>
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #0d0d0d;
-            color: #e6e6e6;
+            background-color: #0b0c10;
+            color: #c5c6c7;
+            font-family: 'Courier New', monospace;
             text-align: center;
-            padding: 2em;
+            padding-top: 100px;
         }
-
         h1 {
-            color: #7ec4cf;
-            /* Icy cyan */
-            font-size: 2.2em;
+            font-size: 3em;
+            margin-bottom: 40px;
+            color: #66fcf1;
+            letter-spacing: 2px;
         }
-
         form {
-            margin-top: 2em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-
-        label {
+        textarea {
+            width: 70%;
+            height: 150px;
+            background-color: #1f2833;
+            border: 1px solid #45a29e;
+            color: #c5c6c7;
             font-size: 1em;
-            margin-right: 0.5em;
-            color: #cccccc;
+            padding: 10px;
+            margin-bottom: 20px;
         }
-
-        input[type="text"] {
-            padding: 0.5em;
-            width: 300px;
-            border: none;
-            border-radius: 4px;
-            font-size: 1em;
-            background-color: #fff;
-            color: #222;
-        }
-
         button {
-            margin-left: 1em;
-            padding: 0.5em 1em;
-            background-color: #5c6bc0;
-            /* Indigo-blue */
+            background-color: #45a29e;
             border: none;
-            color: white;
-            font-weight: bold;
-            border-radius: 4px;
+            color: #0b0c10;
+            padding: 10px 20px;
+            font-size: 1em;
             cursor: pointer;
         }
-
-        button:hover {
-            background-color: #3f51b5;
-        }
-
-        .judgment {
-            margin-top: 2em;
-            font-weight: bold;
-            font-size: 1.3em;
-            color: #9f87ff;
-            /* Soft lavender */
+        .response {
+            margin-top: 40px;
+            font-style: italic;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #66fcf1;
         }
     </style>
 </head>
-
 <body>
-    <h1>BART'S JUDGEMENT CHAMBER</h1>
-
-    <form method="get" action="/">
-        <label for="title">Submit Film Title</label>
-        <input type="text" name="title" id="title">
-        <button type="submit">Submit</button>
+    <h1>BART IS LISTENING</h1>
+    <form method="post">
+        <textarea name="user_input" placeholder="Unburden your soul here...">{{ user_input or "" }}</textarea>
+        <button type="submit">PROCEED</button>
     </form>
 
-    {% if judgment %}
-    <p class="judgment">{{ judgment }}</p>
+    {% if reply %}
+    <div class="response">
+        <p>Bart speaks from the abyss: "{{ reply }}"</p>
+    </div>
     {% endif %}
 </body>
-
 </html>
