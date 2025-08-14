@@ -1,27 +1,35 @@
-from fastapi import FastAPI
-from datetime import datetime
+from flask import Flask, request, render_template
 
-app = FastAPI()
+app = Flask(__name__)
 
-@app.get("/")
-def read_root():
-    return {
-        "message": "BartGPT API is alive. Try /docs for the interface.",
-        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    }
 
-@app.get("/bart/seal")
-def seal_fact():
-    return {
-        "seal_fact": "A group of seals on land is called a harem. Bart judges the naming committee."
-    }
+@app.route("/", methods=["GET", "POST"])
+def get_chat():
+    if request.method == "POST":
+        title = request.form.get("title", "").lower()
+    else:
+        title = request.args.get("title", "").lower()
 
-@app.get("/bart/film")
-def film_opinion(title: str = "Suspiria"):
-    match title.lower():
+    judgment = ""
+
+    match title:
         case "suspiria":
-            return {"judgment": "Correct. Bart nods."}
+            judgment = "Correct. Bart nods."
         case "fargo":
-            return {"judgment": "Acceptable. Bart squints."}
+            judgment = "Acceptable. Bart squints."
+        case "barbie":
+            judgment = "Chaotic glitter. Bart smirks."
+        case "oppenheimer":
+            judgment = "Boom. Bart contemplates existence."
+        case "gone girl":
+            judgment = "Cool Girl. Bart conforms to toxic masculinity."
+        case "possession":
+            judgment = "Cosmic Horror. Bart is unhinged and melting dramatically."
         case _:
-            return {"judgment": "Wrong. Bart sighs."}
+            judgment = "Wrong. Bart sighs."
+
+    return render_template("chat.html", judgment=judgment)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

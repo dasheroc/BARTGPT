@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #0d0d0d;
+            color: #e6e6e6;
+            text-align: center;
+            padding: 2em;
+        }
+
+        h1 {
+            color: #7ec4cf;
+            /* Icy cyan */
+            font-size: 2.2em;
+        }
+
+        form {
+            margin-top: 2em;
+        }
+
+        label {
+            font-size: 1em;
+            margin-right: 0.5em;
+            color: #cccccc;
+        }
+
+        input[type="text"] {
+            padding: 0.5em;
+            width: 300px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            background-color: #fff;
+            color: #222;
+        }
+
+        button {
+            margin-left: 1em;
+            padding: 0.5em 1em;
+            background-color: #5c6bc0;
+            /* Indigo-blue */
+            border: none;
+            color: white;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #3f51b5;
+        }
+
+        .judgment {
+            margin-top: 2em;
+            font-weight: bold;
+            font-size: 1.3em;
+            color: #9f87ff;
+            /* Soft lavender */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>BART'S JUDGEMENT CHAMBER</h1>
+
+    <form method="get" action="/">
+        <label for="title">Submit Film Title</label>
+        <input type="text" name="title" id="title">
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if judgment %}
+    <p class="judgment">{{ judgment }}</p>
+    {% endif %}
+</body>
+
+</html>
